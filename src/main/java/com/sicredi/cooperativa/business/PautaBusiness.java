@@ -22,9 +22,6 @@ public class PautaBusiness {
     private PautaRepository repository;
 
     @Autowired
-    private VotoBusiness votoBusiness;
-
-    @Autowired
     private MessageSource messageSource;
 
     private static final String PAUTA_LIBERADA = "";

@@ -7,23 +7,19 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.Id;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 public class Pauta {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PAUTA_SEQ")
     private Long id;
 
     @Column
     private String titulo;
-
-    @Column(name = "data_criacao")
-    private Date dataCriacao;
 
     @Column(name = "status")
     @Enumerated(EnumType.ORDINAL)
@@ -45,14 +41,6 @@ public class Pauta {
 
     public void setTitulo(String titulo) {
         this.titulo = titulo;
-    }
-
-    public Date getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public void setDataCriacao(Date dataCriacao) {
-        this.dataCriacao = dataCriacao;
     }
 
     public Status getStatus() {

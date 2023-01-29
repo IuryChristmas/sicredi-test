@@ -6,7 +6,6 @@ import com.sicredi.cooperativa.model.Pauta;
 import com.sicredi.cooperativa.model.Voto;
 import com.sicredi.cooperativa.model.dto.ErroDTO;
 import com.sicredi.cooperativa.model.dto.UserDTO;
-import com.sicredi.cooperativa.model.enums.SimNaoEnum;
 import com.sicredi.cooperativa.model.enums.Status;
 import com.sicredi.cooperativa.repository.VotoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Duration;
-import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -41,9 +39,9 @@ public class VotoBusiness {
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<?> votar(Voto voto) {
 
-        if (!this.isCpfValido(voto.getCpfAssociado())) {
+        /*if (!this.isCpfValido(voto.getCpfAssociado())) {
             throw new CpfInvalidoException("CPF Invalido");
-        }
+        }*/
 
         Long countVotoSamePauta = repository.buscarPorCpfEPauta(voto.getCpfAssociado(), voto.getPauta().getId());
 
@@ -68,10 +66,8 @@ public class VotoBusiness {
 
         Pauta pauta = pautaOptional.get();
         if(pauta.getStatus().equals(Status.INICIADA)) {
-            Instant inicioVotacao = pauta.getDataHoraInicio().toInstant();
-            Instant tempoAtual = Instant.now();
-            Duration tempoDecorrido = Duration.between(inicioVotacao, tempoAtual);
-            if(tempoDecorrido.getSeconds() < 60) {
+            if(pauta.getDataHoraInicio().until(pauta.getDataHoraFim(), ChronoUnit.MINUTES) <
+                    pauta.getDataHoraFim().getMinute()) {
                 return VOTO_LIBERADO;
             }
 

@@ -15,7 +15,7 @@ import jakarta.persistence.ManyToOne;
 public class Voto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VOTO_SEQ")
     private Long id;
 
     @Column(name = "voto_associado")
@@ -26,7 +26,7 @@ public class Voto {
     @JoinColumn(name = "id_pauta", referencedColumnName = "id")
     private Pauta pauta;
 
-    @Column
+    @Column(name = "cpf_associado")
     private String cpfAssociado;
 
     public Voto() {
