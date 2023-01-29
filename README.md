@@ -4,7 +4,6 @@ Uma vez que o projeto tenha sido baixado e importado para sua IDE de preferênci
 A porta que está sendo utilizada é a 9000, caso ela não esteja disponível em sua máquina, altere para uma porta de sua preferência que esteja livre.
 No banco de dados temos a aplicação utilizando o Oracle, para que a aplicação funcione deve-se atentar às seguintes configurações no application.properties
 
-spring.jpa.database=MYSQL
 spring.datasource.url=jdbc:oracle:thin:@//localhost:1521/xe (substituir porta se necessário e "xe" pelo serviço que esteja disponível)
 spring.datasource.username=system (ou algum usuario que esteja configurado em seu banco de dados)
 spring.datasource.password=root (senha cadastrada em seu banco de dados)
