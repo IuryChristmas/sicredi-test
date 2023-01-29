@@ -15,7 +15,7 @@ import jakarta.persistence.ManyToOne;
 public class Voto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VOTO_SEQ")
     private Long id;
 
     @Column(name = "voto_associado")
@@ -26,9 +26,8 @@ public class Voto {
     @JoinColumn(name = "id_pauta", referencedColumnName = "id")
     private Pauta pauta;
 
-    @ManyToOne
-    @JoinColumn(name = "id_associado", referencedColumnName = "id")
-    private Voto associado;
+    @Column(name = "cpf_associado")
+    private String cpfAssociado;
 
     public Voto() {
     }
@@ -53,20 +52,20 @@ public class Voto {
         this.votoEnum = votoEnum;
     }
 
+    public String getCpfAssociado() {
+        return cpfAssociado;
+    }
+
+    public void setCpfAssociado(String cpfAssociado) {
+        this.cpfAssociado = cpfAssociado;
+    }
+
     public Pauta getPauta() {
         return pauta;
     }
 
     public void setPauta(Pauta pauta) {
         this.pauta = pauta;
-    }
-
-    public Voto getAssociado() {
-        return associado;
-    }
-
-    public void setAssociado(Voto associado) {
-        this.associado = associado;
     }
 
 }

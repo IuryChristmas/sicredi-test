@@ -1,42 +1,36 @@
 package com.sicredi.cooperativa.model;
 
-import com.sicredi.cooperativa.model.enums.SimNaoEnum;
 import com.sicredi.cooperativa.model.enums.Status;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import org.springframework.data.annotation.Id;
+import jakarta.persistence.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "pauta")
 public class Pauta {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PAUTA_SEQ")
     private Long id;
 
-    @Column
+    @Column(name = "titulo")
     private String titulo;
-
-    @Column(name = "data_criacao")
-    private Date dataCriacao;
 
     @Column(name = "status")
     @Enumerated(EnumType.ORDINAL)
     private Status status;
 
-    @Column(name = "liberar_votacao")
-    private SimNaoEnum liberarVotacao;
-
     @Column(name = "data_hora_inicio_votacao")
-    private Date dataHoraInicio;
+    private LocalDateTime dataHoraInicio;
 
-    @Column(name = "tempo_votacao")
-    private Double tempoVotacao;
+    @Column(name = "data_hora_fim_votacao")
+    private LocalDateTime dataHoraFim;
+
+    @Column(name = "votos_a_favor")
+    private Long votosAFavor;
+
+    @Column(name = "votos_contra")
+    private Long votosContra;
 
     public Long getId() {
         return id;
@@ -50,14 +44,6 @@ public class Pauta {
         this.titulo = titulo;
     }
 
-    public Date getDataCriacao() {
-        return dataCriacao;
-    }
-
-    public void setDataCriacao(Date dataCriacao) {
-        this.dataCriacao = dataCriacao;
-    }
-
     public Status getStatus() {
         return status;
     }
@@ -66,27 +52,35 @@ public class Pauta {
         this.status = status;
     }
 
-    public SimNaoEnum getLiberarVotacao() {
-        return liberarVotacao;
-    }
-
-    public void setLiberarVotacao(SimNaoEnum liberarVotacao) {
-        this.liberarVotacao = liberarVotacao;
-    }
-
-    public Date getDataHoraInicio() {
+    public LocalDateTime getDataHoraInicio() {
         return dataHoraInicio;
     }
 
-    public void setDataHoraInicio(Date dataHoraInicio) {
+    public void setDataHoraInicio(LocalDateTime dataHoraInicio) {
         this.dataHoraInicio = dataHoraInicio;
     }
 
-    public Double getTempoVotacao() {
-        return this.tempoVotacao;
+    public LocalDateTime getDataHoraFim() {
+        return this.dataHoraFim;
     }
 
-    public void setTempoVotacao(Double tempoVotacao) {
-        this.tempoVotacao = tempoVotacao;
+    public void setDataHoraFim(LocalDateTime tempoVotacao) {
+        this.dataHoraFim = tempoVotacao;
+    }
+
+    public Long getVotosContra() {
+        return votosContra;
+    }
+
+    public void setVotosContra(Long votosContra) {
+        this.votosContra = votosContra;
+    }
+
+    public Long getVotosAFavor() {
+        return votosAFavor;
+    }
+
+    public void setVotosAFavor(Long votosAFavor) {
+        this.votosAFavor = votosAFavor;
     }
 }
