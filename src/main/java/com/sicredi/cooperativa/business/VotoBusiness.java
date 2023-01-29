@@ -1,11 +1,8 @@
 package com.sicredi.cooperativa.business;
 
-import com.sicredi.cooperativa.exceptions.CpfInvalidoException;
-import com.sicredi.cooperativa.exceptions.VotoJaRealizadoException;
 import com.sicredi.cooperativa.model.Pauta;
 import com.sicredi.cooperativa.model.Voto;
 import com.sicredi.cooperativa.model.dto.ErroDTO;
-import com.sicredi.cooperativa.model.dto.UserDTO;
 import com.sicredi.cooperativa.model.enums.Status;
 import com.sicredi.cooperativa.repository.VotoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +11,8 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
-import java.time.temporal.ChronoUnit;
-import java.util.Objects;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -33,20 +28,16 @@ public class VotoBusiness {
     private MessageSource messageSource;
 
     private static final String VOTO_LIBERADO = "";
-    private static final String URL = "https://user-info.herokuapp.com/users/{cpf}";
-    private static final String ABLE_TO_VOTE = "ABLE_TO_VOTE";
 
     @Transactional(rollbackFor = Exception.class)
     public ResponseEntity<?> votar(Voto voto) {
 
-        /*if (!this.isCpfValido(voto.getCpfAssociado())) {
-            throw new CpfInvalidoException("CPF Invalido");
-        }*/
-
         Long countVotoSamePauta = repository.buscarPorCpfEPauta(voto.getCpfAssociado(), voto.getPauta().getId());
 
-        if(countVotoSamePauta > 0) {
-            throw new VotoJaRealizadoException("Voce ja votou nesta pauta anteriormente");
+        if (countVotoSamePauta > 0) {
+            return ResponseEntity.badRequest()
+                    .body(ErroDTO.buildMensagemErroSomenteUsuario(messageSource
+                            .getMessage("associado.ja.votou", null, LocaleContextHolder.getLocale())));
         }
 
         String mensagemLiberacaoPauta = verificarPauta(voto.getPauta().getId());
@@ -66,8 +57,9 @@ public class VotoBusiness {
 
         Pauta pauta = pautaOptional.get();
         if(pauta.getStatus().equals(Status.INICIADA)) {
-            if(pauta.getDataHoraInicio().until(pauta.getDataHoraFim(), ChronoUnit.MINUTES) <
-                    pauta.getDataHoraFim().getMinute()) {
+
+            LocalDateTime agora = LocalDateTime.now();
+            if(agora.isAfter(pauta.getDataHoraInicio()) && agora.isBefore(pauta.getDataHoraFim())) {
                 return VOTO_LIBERADO;
             }
 
@@ -78,24 +70,4 @@ public class VotoBusiness {
         return messageSource.getMessage("pauta.nao.liberada.votacao", null, LocaleContextHolder.getLocale());
     }
 
-    /*public Long quantidadeVotosAFavor(Long idPauta) {
-        return repository.quantidadeVotosAFavor(idPauta);
-    }
-
-    public Long quantidadeVotosContra(Long idPauta) {
-        return repository.quantidadeVotosContra(idPauta);
-    }*/
-
-    private boolean isCpfValido(String cpf) {
-        boolean isValido = false;
-
-        RestTemplate restTemplate = new RestTemplate();
-        UserDTO userDTO = restTemplate.getForObject(URL.replace("{cpf}", cpf), UserDTO.class);
-
-        if(Objects.nonNull(userDTO) && userDTO.getStatus().equals(ABLE_TO_VOTE)) {
-            isValido = true;
-        }
-
-        return isValido;
-    }
 }

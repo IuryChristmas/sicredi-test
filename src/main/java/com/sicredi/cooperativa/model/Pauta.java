@@ -1,24 +1,19 @@
 package com.sicredi.cooperativa.model;
 
 import com.sicredi.cooperativa.model.enums.Status;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "pauta")
 public class Pauta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PAUTA_SEQ")
     private Long id;
 
-    @Column
+    @Column(name = "titulo")
     private String titulo;
 
     @Column(name = "status")
@@ -30,6 +25,12 @@ public class Pauta {
 
     @Column(name = "data_hora_fim_votacao")
     private LocalDateTime dataHoraFim;
+
+    @Column(name = "votos_a_favor")
+    private Long votosAFavor;
+
+    @Column(name = "votos_contra")
+    private Long votosContra;
 
     public Long getId() {
         return id;
@@ -65,5 +66,21 @@ public class Pauta {
 
     public void setDataHoraFim(LocalDateTime tempoVotacao) {
         this.dataHoraFim = tempoVotacao;
+    }
+
+    public Long getVotosContra() {
+        return votosContra;
+    }
+
+    public void setVotosContra(Long votosContra) {
+        this.votosContra = votosContra;
+    }
+
+    public Long getVotosAFavor() {
+        return votosAFavor;
+    }
+
+    public void setVotosAFavor(Long votosAFavor) {
+        this.votosAFavor = votosAFavor;
     }
 }
